@@ -76,5 +76,24 @@ class DefaultListStateMachine(RuleBasedStateMachine):
 
         assert self.listy == self.list_
 
+    @rule(data=st.data())
+    def del_(self, data):
+        assume(self.n > 0)
+        i = data.draw(st.integers(min_value=0, max_value=self.n - 1))
+
+        del self.list_[i]
+        del self.listy[i]
+
+        assert self.listy == self.list_
+
+    @rule(data=st.data())
+    def del_slice(self, data):
+        slice_ = data.draw(st.slices(self.n))
+
+        del self.list_[slice_]
+        del self.listy[slice_]
+
+        assert self.listy == self.list_
+
 
 TestDefaultListStateMachine = DefaultListStateMachine.TestCase
