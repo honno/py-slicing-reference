@@ -11,7 +11,6 @@ ints = st.lists(st.integers())
 chars = st.from_regex(r"[a-z]*", fullmatch=True)
 
 
-# TODO test extended slices (ugh)
 class DefaultListStateMachine(RuleBasedStateMachine):
     @initialize(ints=ints)
     def init_lists(self, ints):
