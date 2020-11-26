@@ -1,9 +1,8 @@
-from typing import Iterable
-from typing import Sequence
-from typing import Union
-from typing import Optional
-from typing import Any
-from collections import OrderedDict
+"""Reference implementation of Python's list
+
+A dictionary is used to map indices to their respective elements.
+"""
+from typing import Iterable, Sequence, Union, Optional, Any
 from collections.abc import MutableSequence
 
 __all__ = ["listy"]
@@ -21,9 +20,7 @@ class listy(MutableSequence):
         if isinstance(key, int):
             if abs(key) > n:
                 raise IndexError("list index out of range")
-
             i = key if key >= 0 else len(self) + key
-
             return self._dict[i]
 
         elif isinstance(key, slice):
@@ -40,9 +37,7 @@ class listy(MutableSequence):
         if isinstance(key, int):
             if abs(key) > n:
                 raise IndexError("list index out of range")
-
             i = key if key >= 0 else n + key
-
             self._dict[i] = value
 
         elif isinstance(key, slice):
@@ -55,18 +50,16 @@ class listy(MutableSequence):
 
             # determine slice range
 
-            dstart, dstop = start, stop
-
+            sstart, sstop = start, stop
             try:
-                if (dstop - dstart) / step < 0:
+                if (sstop - sstart) / step < 0:
                     if step >= 1:
-                        dstop = dstart
+                        sstop = sstart
                     else:
-                        dstart = dstop
+                        sstart = sstop
             except ZeroDivisionError:
                 pass
-
-            srange = range(dstart, dstop, step)
+            srange = range(sstart, sstop, step)
 
             # del keys in slice range
 
@@ -93,7 +86,6 @@ class listy(MutableSequence):
 
             istop = start + step * nvalues
             insert_range = range(start, istop, step)
-
             for k, v in zip(insert_range, values):
                 self._dict[k] = v
 
@@ -107,10 +99,10 @@ class listy(MutableSequence):
         if isinstance(key, int):
             if abs(key) > n:
                 raise IndexError("list index out of range")
-
+            i = key if key >= 0 else n + key
             del self._dict[key]
 
-            larger_keys = [k for k in self._dict.keys() if k > key]
+            larger_keys = [k for k in self._dict.keys() if k > i]
             reindexed_subdict = {k - 1: self._dict[k] for k in larger_keys}
             for k in larger_keys:
                 del self._dict[k]
@@ -118,8 +110,8 @@ class listy(MutableSequence):
 
         elif isinstance(key, slice):
             keys = self._dict.keys()
-            start, stop, step = key.indices(n)
 
+            start, stop, step = key.indices(n)
             try:
                 if (stop - start) / step < 0:
                     if step >= 1:
@@ -128,25 +120,22 @@ class listy(MutableSequence):
                         start = stop
             except ZeroDivisionError:
                 pass
-
             srange = range(start, stop, step)
 
-            for k in [k for k in keys if k in srange]:
-                del self._dict[k]
-
             if srange:
-                srange_min = min(srange[0], srange[-1])
+                for k in [k for k in keys if k in srange]:
+                    del self._dict[k]
 
-                larger_keys = sorted([k for k in keys if k > srange_min])
+                srange_min = min(srange[0], srange[-1])
+                larger_keys = [k for k in keys if k > srange_min]
 
                 if larger_keys:
-                    larger_values = [self._dict[k] for k in larger_keys]
-
                     reindexed_subdict = {}
                     rstart = srange_min
                     rstop = rstart + len(larger_keys)
-                    for k, v in zip(range(rstart, rstop), larger_values):
-                        reindexed_subdict[k] = v
+                    for k, lk in zip(range(rstart, rstop), sorted(larger_keys)):
+                        larger_value = self._dict[lk]
+                        reindexed_subdict[k] = larger_value
 
                     for k in larger_keys:
                         del self._dict[k]
@@ -173,7 +162,7 @@ class listy(MutableSequence):
 
         self._dict[i] = value
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any):
         if isinstance(other, Sequence):
             if len(self) != len(other):
                 return False
