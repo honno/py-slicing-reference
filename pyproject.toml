@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "list-ref"
+name = "slice-ref"
 version = "0.0.1"
 description = ""
 authors = ["Matthew Barber <quitesimplymatt@gmail.com>"]

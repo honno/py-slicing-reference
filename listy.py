@@ -116,7 +116,6 @@ class listy(MutableSequence):
                 del self._dict[k]
             self._dict.update(reindexed_subdict)
 
-
         elif isinstance(key, slice):
             keys = self._dict.keys()
             start, stop, step = key.indices(n)
