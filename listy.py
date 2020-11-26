@@ -2,7 +2,7 @@
 
 A dictionary is used to map indices to their respective elements.
 """
-from typing import Iterable, Sequence, Union, Optional, Any
+from typing import Iterable, Sequence, Union, Optional, Any, Type
 from collections.abc import MutableSequence
 
 __all__ = ["listy"]
@@ -28,8 +28,7 @@ class listy(MutableSequence):
             return listy(self._dict[i] for i in srange)
 
         else:
-            name = type(key).__name__
-            raise TypeError(f"listy indices must be integers or slices, not {name}")
+            listy._raise_type_error(type(key))
 
     def __setitem__(self, key: Union[int, slice], value: Any):
         n = len(self)
@@ -90,8 +89,7 @@ class listy(MutableSequence):
                 self._dict[k] = v
 
         else:
-            name = type(key).__name__
-            raise TypeError(f"listy indices must be integers or slices, not {name}")
+            listy._raise_type_error(type(key))
 
     def __delitem__(self, key: Union[int, slice]):
         n = len(self)
@@ -142,9 +140,7 @@ class listy(MutableSequence):
                     self._dict.update(reindexed_subdict)
 
         else:
-            name = type(key).__name__
-            raise TypeError(f"listy indices must be integers or slices, not {name}")
-
+            listy._raise_type_error(type(key))
 
     def __len__(self):
         return len(self._dict)
@@ -176,3 +172,10 @@ class listy(MutableSequence):
 
     def __str__(self):
         return f"listy({repr(self)})"
+
+    @staticmethod
+    def _raise_type_error(type_: Type):
+        name = type_.__name__
+        raise TypeError(f"listy indices must be integers or slices, not {name}")
+
+
