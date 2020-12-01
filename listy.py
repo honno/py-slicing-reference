@@ -18,7 +18,7 @@ class listy(MutableSequence):
         n = len(self)
 
         if isinstance(key, int):
-            if abs(key) > n:
+            if key >= n or key < -n:
                 raise IndexError("list index out of range")
             i = key if key >= 0 else len(self) + key
             return self._dict[i]
@@ -34,7 +34,7 @@ class listy(MutableSequence):
         n = len(self)
 
         if isinstance(key, int):
-            if abs(key) > n:
+            if key >= n or key < -n:
                 raise IndexError("list index out of range")
             i = key if key >= 0 else n + key
             self._dict[i] = value
@@ -144,10 +144,6 @@ class listy(MutableSequence):
 
     def __len__(self):
         return len(self._dict)
-
-    def __iter__(self):
-        for i in range(len(self)):
-            yield self[i]
 
     def insert(self, i: int, value: Any):
         larger_keys = [k for k in self._dict.keys() if k >= i]
