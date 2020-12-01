@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slice-ref"
-version = "0.0.1"
+version = "0.0.2"
 description = "Reference implementation of Python's list slicing resolution"
 license = "BSD-3-Clause"
 authors = ["Matthew Barber <quitesimplymatt@gmail.com>"]
